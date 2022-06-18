@@ -1,11 +1,9 @@
-from demo1 import SPEED_EXTENT
-
-
 # BurgerBot
 # Kevin McAleer
 # June 2022
 
 from motor import Motor, pico_motor_shim
+from pimoroni import REVERSED_DIR
 
 class Burgerbot:
 
@@ -15,38 +13,67 @@ class Burgerbot:
     __speed = 0
 
     def __init__(self):
-
+        """ Initialize the Burgerbot """
         # Use the settings below to configure the motors so they turn in the same direction
         
-        motors[0].direction(REVERSED_DIR)
-        # motors[1].direction(REVERSED_DIR)
+        # self.motors[0].direction(REVERSED_DIR)
+        self.motors[1].direction(REVERSED_DIR)
 
-    def forward(self):
-        self.motors[0].speed = self.speed
-        pass
+    def forward(self):        
+        """ Drive the motors forward """
+        for m in self.motors:
+            m.enable()
+            m.speed(self.speed)
     
     def backward(self):
-        pass
-
+        """ Drive the motors backward """
+        for m in self.motors:
+            m.enable()
+            m.speed(-self.speed)
+        
     def turnleft(self):
-        pass
+        """ Turn the motors left """
+
+        # enable the motors
+        self.motors[0].enable()
+        self.motors[1].enable()
+
+        # set the speed of the motors
+        self.motors[0].speed(self.speed)
+        self.motors[1].speed(-self.speed)        
     
     def turnright(self):
-        pass
+        """ Turn the motors right """
+
+        # enable the motors
+        self.motors[0].enable()
+        self.motors[1].enable()
+
+        # set the speed of the motors
+        self.motors[0].speed(-self.speed)
+        self.motors[1].speed(self.speed)  
 
     def stop(self):
+        """ Stop the motors """
+
         # Disable the motors
         for m in self.motors:
             m.disable()
 
     @property
     def speed(self):
+        """ Get the speed of the motors """
+
         return self.__speed
 
     @speed.setter
     def speed(self, value):
-        if 0 < speed < 100:
+        """ Set the speed of the motors """
+
+        # Checl the speed value is within the range we expect (-1 to 1)
+        if -1 < value < 1:
             self.__speed = value
+            for m in self.motors:
+                m.speed(self.__speed)
         else:
             print(f"Speed value should be between 0 and 100, however {value} was provided")
-
