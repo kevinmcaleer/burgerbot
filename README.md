@@ -14,4 +14,4 @@ You can download the STL files for this robot
 - [`Range Finder`](stl/rangefinder_v1.stl)
 - [`Support`](stl/support_v1.stl)
 - [`Top Section`](stl/topsection_v1.stl)
-
+- [`Motor Holders`](stl/motor_holder_v6.stl)
