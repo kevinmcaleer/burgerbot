@@ -6,3 +6,5 @@ This bite-sized robot uses the [Pimoroni Motor SHIM for Pico](https://www.pimoro
 BurgerBot also has a Range finder for detecting and avoiding objects (code comming soon).
 
 You can download the STL files for this robot
+
+- `[Chassis](stl/chassis.stl)`
