@@ -5,6 +5,12 @@
 from motor import Motor, pico_motor_shim
 from pimoroni import REVERSED_DIR
 
+
+# MOTOR_1 = machine.Pin(6, machine.PIN_OUT)
+# MOTOR_1_SPEED = machine.Pin(7, ,machine.PIN_OUT)
+# MOTOR_2 = machine.Pin(27, machine.PIN_OUT)
+# MOTOR_2_SPEED = machine.Pin(26, ,machine.PIN_OUT)
+
 class Burgerbot:
 
     # Create a list of motors
@@ -59,6 +65,12 @@ class Burgerbot:
         # Disable the motors
         for m in self.motors:
             m.disable()
+            
+    def left_motor(self, speed):
+        self.motors[0].speed(speed)
+        
+    def right_motor(self, speed):
+        self.motors[1].speed(speed)
 
     @property
     def speed(self):
