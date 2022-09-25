@@ -4,12 +4,24 @@
 
 from motor import Motor, pico_motor_shim
 from pimoroni import REVERSED_DIR
-
+from servo import Servo
+from phew import connect_to_wifi, logging, access_point, dns, server
+from phew.template import render_template
+from phew.server import redirect
+import gc
+gc.threshold(50000) # setup garbage collection
 
 # MOTOR_1 = machine.Pin(6, machine.PIN_OUT)
 # MOTOR_1_SPEED = machine.Pin(7, ,machine.PIN_OUT)
 # MOTOR_2 = machine.Pin(27, machine.PIN_OUT)
 # MOTOR_2_SPEED = machine.Pin(26, ,machine.PIN_OUT)
+
+
+# @server.route("/penup", methods=["POST"])
+# def penup():
+#     global command
+#     command = "penup"
+#     return render_template("index.html", command=command)
 
 class Burgerbot:
 
@@ -17,13 +29,27 @@ class Burgerbot:
     MOTOR_PINS = [pico_motor_shim.MOTOR_1, pico_motor_shim.MOTOR_2]
     motors = [Motor(pins) for pins in MOTOR_PINS]
     __speed = 0
+    pen_servo = Servo(16)
+    
 
+    
     def __init__(self):
         """ Initialize the Burgerbot """
         # Use the settings below to configure the motors so they turn in the same direction
         
         # self.motors[0].direction(REVERSED_DIR)
         self.motors[1].direction(REVERSED_DIR)
+        # self.pen_servo.enable()
+        # self.pen_servo.to_mid()
+
+    def pen_middle(self):
+        self.pen_servo.to_mid()
+
+    def pen_down(self):
+        self.pen_servo.value(30)
+
+    def pen_up(self):
+        self.pen_servo.value(-20)
 
     def forward(self):        
         """ Drive the motors forward """
@@ -85,7 +111,7 @@ class Burgerbot:
         # Checl the speed value is within the range we expect (-1 to 1)
         if -1 < value < 1:
             self.__speed = value
-            for m in self.motors:
-                m.speed(self.__speed)
+#             for m in self.motors:
+#                 m.speed(self.__speed)
         else:
             print(f"Speed value should be between 0 and 100, however {value} was provided")

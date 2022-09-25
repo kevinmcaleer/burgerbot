@@ -25,3 +25,7 @@ mac.speed = 0.5
 ### `turnleft`
 ### `turnright`
 ### `stop`
+
+## BurgerBot V2
+### `Pen_up`
+### `Pen_down`
