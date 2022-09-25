@@ -109,9 +109,9 @@ class Burgerbot:
         """ Set the speed of the motors """
 
         # Checl the speed value is within the range we expect (-1 to 1)
-        if -1 < value < 1:
+        if -1 <= value <= 1:
             self.__speed = value
 #             for m in self.motors:
 #                 m.speed(self.__speed)
         else:
-            print(f"Speed value should be between 0 and 100, however {value} was provided")
+            print(f"Speed value should be between -1 and +1, however {value} was provided")

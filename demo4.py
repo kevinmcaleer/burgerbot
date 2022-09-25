@@ -59,7 +59,6 @@ def hotspot(request):
     """ Redirect to the Index Page """
     return render_template("index.html", command=command)
 
-@staticmethod
 @server.catchall()
 def catch_all(request):
     """ Catch and redirect requests """
@@ -85,12 +84,12 @@ start_ap()
 print("hello")
 
 
-while True:
-    sleep(0.5)
-    print('.', end="")
-    if command == "penup":
-        mac.pen_up()
-    if command == "pendown":
-        mac.pen_down()
-    if command == "forward":
-        mac.forward()
+# while True:
+#     sleep(0.5)
+#     print('.', end="")
+#     if command == "penup":
+#         mac.pen_up()
+#     if command == "pendown":
+#         mac.pen_down()
+#     if command == "forward":
+#         mac.forward()
