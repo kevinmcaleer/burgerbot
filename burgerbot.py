@@ -9,6 +9,7 @@ from phew import connect_to_wifi, logging, access_point, dns, server
 from phew.template import render_template
 from phew.server import redirect
 import gc
+from machine import Pin
 gc.threshold(50000) # setup garbage collection
 
 # MOTOR_1 = machine.Pin(6, machine.PIN_OUT)
@@ -30,8 +31,7 @@ class Burgerbot:
     motors = [Motor(pins) for pins in MOTOR_PINS]
     __speed = 0
     pen_servo = Servo(16)
-    
-
+    line_sensor = Pin(17, Pin.IN)
     
     def __init__(self):
         """ Initialize the Burgerbot """
@@ -41,6 +41,13 @@ class Burgerbot:
         self.motors[1].direction(REVERSED_DIR)
         # self.pen_servo.enable()
         # self.pen_servo.to_mid()
+
+    @property
+    def line_detected(self)->bool:
+        if self.line_sensor.value == 1:
+            return True
+        else:
+            return False
 
     def pen_middle(self):
         self.pen_servo.to_mid()
