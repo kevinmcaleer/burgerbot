@@ -60,16 +60,32 @@ async def blink_task():
 
 def move_robot(command):
     if command == b'a':
-        print("a button pressed")
+#         print("a button pressed")
         bot.forward(0.1)
     elif command == b'b':
-        print("b button pressed")
+#         print("b button pressed")
         bot.backward(0.1)
     elif command == b'x':
-        print("x button pressed")
+#         print("x button pressed")
         bot.turnleft(0.1)
     elif command == b'y':
-        print("y button pressed")
+#         print("y button pressed")
+        bot.turnright(0.1)
+
+def notify_callback(char, data):
+    print('Data received: ', data)
+    command = data
+    if command == b'a':
+        # print("a button pressed")
+        bot.forward(0.1)
+    elif command == b'b':
+        # print("b button pressed")
+        bot.backward(0.1)
+    elif command == b'x':
+        # print("x button pressed")
+        bot.turnleft(0.1)
+    elif command == b'y':
+        # print("y button pressed")
         bot.turnright(0.1)
 
 async def peripheral_task():
@@ -95,6 +111,7 @@ async def peripheral_task():
 
         robot_service = await connection.service(_REMOTE_UUID)
         control_characteristic = await robot_service.characteristic(_REMOTE_CHARACTERISTICS_UUID)
+        
         while True:
             try:
                 if robot_service == None:
@@ -110,16 +127,15 @@ async def peripheral_task():
                 break
            
             try:
-                command = await control_characteristic.read()
-                
-#                         print(f"Command: {temp_deg_c}")
+                data = await control_characteristic.read(timeout_ms=1000)
 
-                move_robot(command)
-                                            
-                
-                await asyncio.sleep_ms(10)
-                bot.stop()
-                
+                await control_characteristic.subscribe(notify=True)
+                while True:
+                    command = await control_characteristic.notified()
+                    move_robot(command)
+                    await asyncio.sleep_ms(1)
+                    bot.stop()
+                                                            
             except Exception as e:
                 print(f'something went wrong; {e}')
                 connected = False
