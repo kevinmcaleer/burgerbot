@@ -46,7 +46,7 @@ async def blink_task():
     print('blink task started')
     toggle = True
     
-    while True:
+    while True and alive:
         blink = 250
         led.value(toggle)
         toggle = not toggle
@@ -77,20 +77,20 @@ def notify_callback(char, data):
     command = data
     if command == b'a':
         # print("a button pressed")
-        bot.forward(0.1)
+        bot.forward(0.01)
     elif command == b'b':
         # print("b button pressed")
-        bot.backward(0.1)
+        bot.backward(0.01)
     elif command == b'x':
         # print("x button pressed")
-        bot.turnleft(0.1)
+        bot.turnleft(0.01)
     elif command == b'y':
         # print("y button pressed")
-        bot.turnright(0.1)
+        bot.turnright(0.01)
 
 async def peripheral_task():
     print('starting peripheral task')
-    global connected
+    global connected, alive
     connected = False
     device = await find_remote()
     if not device:
@@ -106,6 +106,7 @@ async def peripheral_task():
       
     async with connection:
         print("Connected")
+        alive = True
         connected = True
 #         alive = True
 
@@ -116,14 +117,17 @@ async def peripheral_task():
             try:
                 if robot_service == None:
                     print('remote disconnected')
+                    alive = False
                     break
                 
             except asyncio.TimeoutError:
                 print("Timeout discovering services/characteristics")
+                alive = False
                 break
             
             if control_characteristic == None:
                 print('no control')
+                alive = False
                 break
            
             try:
@@ -133,7 +137,6 @@ async def peripheral_task():
                 while True:
                     command = await control_characteristic.notified()
                     move_robot(command)
-                    await asyncio.sleep_ms(1)
                     bot.stop()
                                                             
             except Exception as e:
@@ -143,6 +146,7 @@ async def peripheral_task():
                 break
         await connection.disconnected()
         print(f'disconnected')
+        alive = False
                 
 async def main():
     tasks = []
