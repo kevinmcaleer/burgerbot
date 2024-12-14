@@ -46,7 +46,7 @@ async def blink_task():
     print('blink task started')
     toggle = True
     
-    while True and alive:
+    while True:
         blink = 250
         led.value(toggle)
         toggle = not toggle
