@@ -4,14 +4,91 @@
 # Updated: 25 January 2025
 
 # Import necessary modules
-from motor import Motor, pico_motor_shim  # Motor control libraries
-from pimoroni import REVERSED_DIR  # For reversing motor direction
-from servo import Servo  # Servo motor control
 import gc  # Garbage collection utilities
-from machine import Pin  # Microcontroller pin control
+from machine import Pin, PWM  # Microcontroller pin and PWM control
 from time import sleep, sleep_us, ticks_us  # Timing utilities
 
 gc.threshold(50000)  # Configure garbage collection threshold for efficient memory management
+
+class Motor:
+    """
+    A class to represent a motor controlled via PWM.
+
+    Attributes:
+        pwm_pin (PWM): The PWM pin to control motor speed.
+        dir_pin (Pin): The GPIO pin to control motor direction.
+    """
+
+    def __init__(self, pwm_pin: int, dir_pin: int):
+        """
+        Initializes the motor with specified PWM and direction pins.
+
+        Args:
+            pwm_pin (int): The pin number for PWM control.
+            dir_pin (int): The pin number for direction control.
+        """
+        self.pwm = PWM(Pin(pwm_pin))
+        self.pwm.freq(1000)  # Set PWM frequency
+        self.dir = Pin(dir_pin, Pin.OUT)
+
+    def speed(self, value: float):
+        """
+        Sets the motor speed and direction.
+
+        Args:
+            value (float): Speed value (-1 to 1). Negative values reverse the direction.
+        """
+        if value < 0:
+            self.dir.low()  # Reverse direction
+        else:
+            self.dir.high()  # Forward direction
+        self.pwm.duty_u16(int(abs(value) * 65535))  # Set PWM duty cycle
+
+    def enable(self):
+        """
+        Enables the motor by setting a default PWM duty cycle.
+        """
+        self.pwm.duty_u16(0)
+
+    def disable(self):
+        """
+        Disables the motor by stopping the PWM signal.
+        """
+        self.pwm.duty_u16(0)
+
+class Servo:
+    """
+    A class to represent a servo motor controlled via PWM.
+
+    Attributes:
+        pwm (PWM): The PWM pin to control the servo.
+    """
+
+    def __init__(self, pin: int):
+        """
+        Initializes the servo with a specified PWM pin.
+
+        Args:
+            pin (int): The pin number for PWM control.
+        """
+        self.pwm = PWM(Pin(pin))
+        self.pwm.freq(50)  # Servo frequency
+
+    def value(self, angle: float):
+        """
+        Sets the servo angle.
+
+        Args:
+            angle (float): The angle for the servo (-90 to 90).
+        """
+        duty = int((angle + 90) * 100 / 180 + 25)  # Map angle to duty cycle
+        self.pwm.duty_u16(duty * 655)
+
+    def to_mid(self):
+        """
+        Moves the servo to the middle position.
+        """
+        self.value(0)
 
 class RangeFinder:
     """
@@ -75,8 +152,8 @@ class Burgerbot:
         __speed (float): Internal speed value for the motors.
     """
 
-    MOTOR_PINS = [pico_motor_shim.MOTOR_1, pico_motor_shim.MOTOR_2]  # Motor pins
-    motors = [Motor(pins) for pins in MOTOR_PINS]  # Initialize motor objects
+    MOTOR_PINS = [(6, 7), (27, 26)]  # Motor PWM and direction pins
+    motors = [Motor(pwm_pin, dir_pin) for pwm_pin, dir_pin in MOTOR_PINS]  # Initialize motor objects
     pen_servo = Servo(16)  # Initialize pen servo on pin 16
     line_sensor = Pin(17, Pin.IN)  # Line sensor pin
     range_finder = RangeFinder(trigger_pin=0, echo_pin=1)  # Ultrasonic range finder
@@ -85,12 +162,6 @@ class Burgerbot:
         """
         Initializes the BurgerBot with default motor configurations and speed.
         """
-        # Reverse the direction of the second motor for alignment
-        self.motors[1].direction(REVERSED_DIR)
-
-        # Enable all motors and set default speed
-        for motor in self.motors:
-            motor.enable()
         self.speed = 0.5
 
     @property
