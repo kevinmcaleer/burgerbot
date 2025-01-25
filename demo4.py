@@ -5,7 +5,7 @@
 from phew import server, logging, dns, access_point
 from phew.template import render_template
 from phew.server import redirect
-from burgerbot import Burgerbot
+from archive.burgerbot import Burgerbot
 from time import sleep
 import math
 

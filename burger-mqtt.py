@@ -2,7 +2,7 @@
 # Kevin McAleer
 # July 2022
 
-from burgerbot import Burgerbot
+from archive.burgerbot import Burgerbot
 from secret import ssid, password
 from umqttsimple import MQTTClient
 from machine import Pin

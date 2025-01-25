@@ -1,5 +1,5 @@
 from time import sleep
-from burgerbot import Burgerbot
+from archive.burgerbot import Burgerbot
 
 mac = Burgerbot()
 mac.speed = 50
