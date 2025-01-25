@@ -18,6 +18,26 @@ mac = Burgerbot()
 mac.speed = 0.5
 ```
 
+### `distance`
+Reads the distance from the range finder sensor in centimeters. This property calculates the time taken for an ultrasonic pulse to bounce back and converts it to a distance measurement.
+
+```python
+# Read the distance to an object
+current_distance = mac.distance
+print(f"Distance: {current_distance} cm")
+```
+
+### `line_detected`
+Indicates whether the line sensor has detected a line. Returns `True` if a line is detected and `False` otherwise.
+
+```python
+# Check if a line is detected
+if mac.line_detected:
+    print("Line detected!")
+else:
+    print("No line detected.")
+```
+
 ## Methods
 ### `forward`
 Drives both motors forward at the currently set speed.
@@ -59,7 +79,6 @@ Stops both motors immediately by disabling them.
 mac.stop()
 ```
 
-## BurgerBot V2
 ### `pen_up`
 Moves the pen servo to the up position (e.g., for lifting the pen off the surface).
 
@@ -82,4 +101,52 @@ Moves the pen servo to the middle position, typically used for calibration.
 ```python
 # Move pen to the middle position
 mac.pen_middle()
+```
+
+### `left_motor`
+Sets the speed of the left motor independently.
+
+```python
+# Set left motor speed to 70%
+mac.left_motor(0.7)
+```
+
+### `right_motor`
+Sets the speed of the right motor independently.
+
+```python
+# Set right motor speed to -50%
+mac.right_motor(-0.5)
+```
+
+### `forward` with Duration
+Drives the motors forward for a specified duration (in seconds).
+
+```python
+# Move forward for 2 seconds
+mac.forward(duration=2)
+```
+
+### `backward` with Duration
+Drives the motors backward for a specified duration (in seconds).
+
+```python
+# Move backward for 1.5 seconds
+mac.backward(duration=1.5)
+```
+
+### `turn_left` with Duration
+Turns the robot left for a specified duration (in seconds).
+
+```python
+# Turn left for 1 second
+mac.turn_left(duration=1)
+```
+
+### `turn_right` with Duration
+Turns the robot right for a specified duration (in seconds).
+
+```python
+# Turn right for 0.5 seconds
+mac.turn_right(duration=0.5)
 ```
