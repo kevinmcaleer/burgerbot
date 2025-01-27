@@ -152,7 +152,7 @@ class Burgerbot:
         __speed (float): Internal speed value for the motors.
     """
 
-    MOTOR_PINS = [(6, 7), (27, 26)]  # Motor PWM and direction pins
+    MOTOR_PINS = [(5, 6), (12, 13)]  # Motor PWM and direction pins
     motors = [Motor(pwm_pin, dir_pin) for pwm_pin, dir_pin in MOTOR_PINS]  # Initialize motor objects
     pen_servo = Servo(16)  # Initialize pen servo on pin 16
     line_sensor = Pin(17, Pin.IN)  # Line sensor pin
